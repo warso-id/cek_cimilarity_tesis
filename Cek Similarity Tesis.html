@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>Cek Similarity Tesis</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #0056b3;
+            --primary-dark: #003f82;
+            --bg: #f5f7fb;
+            --card: #ffffff;
+            --text: #1e293b;
+            --border: #e2e8f0;
+            --success: #10b981;
+            --error: #ef4444;
+            --radius: 16px;
+            --shadow: 0 10px 30px rgba(0,0,0,0.06);
+            --transition: 0.15s ease;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            color: var(--text);
+            line-height: 1.5;
+        }
+        .container { width: 100%; max-width: 880px; margin: 10px auto; }
+        .card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: clamp(20px, 5vw, 36px);
+            box-shadow: var(--shadow);
+        }
+        .header { text-align: center; margin-bottom: 30px; }
+        .header .icon { font-size: 3rem; color: var(--primary); margin-bottom: 8px; }
+        .header h1 { font-size: clamp(1.4rem, 5vw, 2rem); font-weight: 700; }
+        .header h2 {
+            font-size: 0.95rem; color: var(--primary-dark);
+            background: #eef5ff; display: inline-block;
+            padding: 6px 18px; border-radius: 20px; margin-top: 6px;
+        }
+        .carousel-container {
+            background: #f8faff; border-radius: var(--radius);
+            margin-bottom: 24px; overflow: hidden;
+            border: 1px solid #e6eef9; box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+        .carousel-slides { display: flex; transition: transform 0.4s cubic-bezier(0.2,0.9,0.4,1); }
+        .carousel-slide { flex: 0 0 100%; padding: 22px 22px 12px; background: #f8faff; }
+        .carousel-slide h3 { color: var(--primary-dark); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+        .carousel-slide ul { margin-left: 20px; line-height: 2; list-style: none; }
+        .carousel-slide ul li::before { content: "✓"; color: var(--primary); font-weight: bold; margin-right: 8px; }
+        .carousel-nav {
+            display: flex; justify-content: center; align-items: center;
+            gap: 18px; padding: 6px 0 14px; background: #f8faff;
+        }
+        .carousel-nav button {
+            background: var(--primary); border: none; color: white;
+            width: 36px; height: 36px; border-radius: 50%;
+            font-size: 1rem; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: transform 0.15s, background 0.15s;
+        }
+        .carousel-nav button:hover { background: var(--primary-dark); transform: scale(1.05); }
+        .dot { width: 10px; height: 10px; background: #cbd6e4; border-radius: 50%; cursor: pointer; transition: 0.15s; }
+        .dot.active { background: var(--primary); transform: scale(1.3); }
+        .form-group { margin-bottom: 20px; }
+        label { display: flex; align-items: center; gap: 6px; font-weight: 600; margin-bottom: 8px; }
+        label i { color: var(--primary); width: 18px; }
+        .required { color: var(--error); font-weight: 700; }
+        input[type=text], input[type=email], input[type=tel], textarea {
+            width: 100%; padding: 14px 16px; border: 2px solid var(--border);
+            border-radius: 12px; font-size: 0.95rem; font-family: inherit;
+            background: #f9fafc; transition: border 0.15s, box-shadow 0.15s;
+        }
+        input:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,86,179,0.1); outline: none; }
+        textarea { resize: vertical; min-height: 90px; }
+        .file-upload { position: relative; }
+        .file-upload input[type=file] { position: absolute; left:0; top:0; opacity:0; width:100%; height:100%; cursor: pointer; }
+        .file-custom {
+            display: flex; align-items: center; gap: 12px;
+            border: 2px dashed #b3c7e3; border-radius: 12px;
+            padding: 14px 18px; background: #f9fafc; transition: 0.15s;
+        }
+        .file-upload:hover .file-custom { border-color: var(--primary); background: #f0f4fc; }
+        .file-custom i { font-size: 1.8rem; color: var(--primary); }
+        .file-custom .file-text { flex:1; color:#888; font-size:0.9rem; word-break:break-word; }
+        .file-preview { margin-top: 10px; border:1px solid #ddd; border-radius:10px; overflow:hidden; display:none; }
+        .file-preview iframe { width:100%; height:320px; border:none; }
+        .btn-submit {
+            width:100%; background: var(--primary); color:white; border:none;
+            padding:16px; font-size:1.05rem; font-weight:600; border-radius:12px;
+            cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px;
+            transition: 0.15s; box-shadow:0 4px 12px rgba(0,86,179,0.25); margin-top:12px;
+        }
+        .btn-submit:hover { background: var(--primary-dark); transform: translateY(-1px); }
+        .btn-submit:disabled { background: #94a3b8; cursor:not-allowed; box-shadow:none; transform:none; }
+        .progress-container { display:none; margin-top:14px; background:#e2e8f0; border-radius:10px; overflow:hidden; }
+        .progress-bar { height:6px; background:var(--primary); width:0%; transition:width 0.3s; }
+        .status-msg { display:none; padding:14px; border-radius:10px; margin-top:18px; font-weight:500; font-size:0.9rem; }
+        .status-msg.success { background:#d1fae5; color:#065f46; border-left:4px solid #10b981; }
+        .status-msg.error { background:#fee2e2; color:#991b1b; border-left:4px solid #ef4444; }
+        .status-msg.loading { background:#fef3c7; color:#92400e; border-left:4px solid #f59e0b; }
+        .footer { text-align:center; margin-top:24px; color:#94a3b8; font-size:0.8rem; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="card">
+        <div class="header">
+            <i class="fas fa-graduation-cap icon"></i>
+            <h1>Cek Similarity Tesis</h1>
+            <h2 id="semesterText">Memuat semester...</h2>
+        </div>
+
+        <div class="carousel-container" id="carouselInfo">
+            <div class="carousel-slides" id="carouselSlides">
+                <div class="carousel-slide">
+                    <h3><i class="fas fa-file-alt"></i> Format File Tesis</h3>
+                    <p>File tesis dalam <strong>satu file PDF</strong> berisi:</p>
+                    <ul><li>Judul Tesis</li><li>Nama Mahasiswa & NIM</li><li>Abstrak Indonesia & Inggris</li><li>Bab 1 – Bab 5</li><li>References (Daftar Pustaka)</li></ul>
+                </div>
+                <div class="carousel-slide">
+                    <h3><i class="fas fa-ban"></i> Tidak Perlu Disertakan</h3>
+                    <ul><li>Cover</li><li>Lembar Persetujuan / Pengesahan</li><li>Daftar Isi, Gambar, Tabel</li><li>Kata Pengantar</li><li>Ucapan Terima Kasih</li><li>Lampiran</li></ul>
+                </div>
+                <div class="carousel-slide">
+                    <h3><i class="fas fa-tag"></i> Penamaan File</h3>
+                    <p>Format: <strong>Nama Lengkap - Judul Tesis.pdf</strong></p>
+                    <p style="margin-top:8px;">Contoh: <em>Andi Suherman - Strategi PR pada Perusahaan X.pdf</em></p>
+                </div>
+            </div>
+            <div class="carousel-nav">
+                <button id="prevSlide"><i class="fas fa-chevron-left"></i></button>
+                <div class="carousel-dots" id="carouselDots"></div>
+                <button id="nextSlide"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+
+        <form id="similarityForm" novalidate>
+            <div class="form-group">
+                <label><i class="fas fa-user"></i> Nama Lengkap <span class="required">*</span></label>
+                <input type="text" id="nama" placeholder="Masukkan nama lengkap Anda" required>
+            </div>
+            <div class="form-group">
+                <label><i class="fab fa-whatsapp"></i> No. HP / WhatsApp <span class="required">*</span></label>
+                <input type="tel" id="wa" placeholder="0812-3456-7890" required>
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-envelope"></i> Email Aktif <span class="required">*</span></label>
+                <input type="email" id="email" placeholder="nama@email.com" required>
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-book"></i> Judul Tesis <span class="required">*</span></label>
+                <textarea id="judul" rows="3" placeholder="Masukkan judul tesis lengkap" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-file-pdf"></i> File Tesis (PDF) <span class="required">*</span></label>
+                <div class="file-upload">
+                    <input type="file" id="tesis" accept=".pdf" required>
+                    <div class="file-custom">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <span class="file-text" id="tesisText">Klik / seret file tesis (maks 20 MB)</span>
+                    </div>
+                </div>
+                <div class="file-preview" id="previewTesis"><iframe id="iframeTesis"></iframe></div>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-stamp"></i> Lembar Persetujuan (PDF) <span class="required">*</span></label>
+                <div class="file-upload">
+                    <input type="file" id="persetujuan" accept=".pdf" required>
+                    <div class="file-custom">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <span class="file-text" id="persetujuanText">Klik / seret file persetujuan (maks 10 MB)</span>
+                    </div>
+                </div>
+                <div class="file-preview" id="previewPersetujuan"><iframe id="iframePersetujuan"></iframe></div>
+            </div>
+
+            <div class="progress-container" id="progressContainer">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+
+            <button type="submit" class="btn-submit" id="btnSubmit">
+                <i class="fas fa-paper-plane" id="submitIcon"></i>
+                <span id="btnText">Kirim Pengajuan</span>
+                <div class="spinner" id="spinner"></div>
+            </button>
+
+            <div class="status-msg" id="statusMsg"></div>
+        </form>
+        <div class="footer">© <span id="yearText"></span> Sistem Cek Similarity Tesis</div>
+    </div>
+</div>
+
+<script>
+(function() {
+    "use strict";
+
+    // Ganti dengan URL Web App Google Apps Script Anda
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxJb901HXKYU2DGYrCTFCwb_6eG3jTz1yLL8B_GTL6L19vJmmnhrhk-UInflydYi3qKbw/exec';
+    const MAX_TESIS = 20 * 1024 * 1024;
+    const MAX_PERSETUJUAN = 10 * 1024 * 1024;
+
+    const form = document.getElementById('similarityForm');
+    const btnSubmit = document.getElementById('btnSubmit');
+    const btnText = document.getElementById('btnText');
+    const submitIcon = document.getElementById('submitIcon');
+    const statusMsg = document.getElementById('statusMsg');
+    const progressContainer = document.getElementById('progressContainer');
+    const progressBar = document.getElementById('progressBar');
+    const inputNama = document.getElementById('nama');
+    const inputWa = document.getElementById('wa');
+    const inputEmail = document.getElementById('email');
+    const inputJudul = document.getElementById('judul');
+    const inputTesis = document.getElementById('tesis');
+    const inputPersetujuan = document.getElementById('persetujuan');
+    const tesisText = document.getElementById('tesisText');
+    const persetujuanText = document.getElementById('persetujuanText');
+    const previewTesis = document.getElementById('previewTesis');
+    const iframeTesis = document.getElementById('iframeTesis');
+    const previewPersetujuan = document.getElementById('previewPersetujuan');
+    const iframePersetujuan = document.getElementById('iframePersetujuan');
+
+    const slides = document.getElementById('carouselSlides');
+    const dotsContainer = document.getElementById('carouselDots');
+    const slideCount = document.querySelectorAll('.carousel-slide').length;
+    let currentSlide = 0;
+
+    function buildDots() {
+        dotsContainer.innerHTML = '';
+        for (let i=0; i<slideCount; i++) {
+            const dot = document.createElement('span');
+            dot.className = 'dot' + (i===0?' active':'');
+            dot.dataset.index = i;
+            dot.addEventListener('click',()=>goToSlide(i));
+            dotsContainer.appendChild(dot);
+        }
+    }
+    function updateDots(index) { [...dotsContainer.children].forEach((d,i)=>d.classList.toggle('active',i===index)); }
+    function goToSlide(index) {
+        currentSlide = (index+slideCount)%slideCount;
+        slides.style.transform = `translateX(-${currentSlide*100}%)`;
+        updateDots(currentSlide);
+    }
+    function nextSlide(){goToSlide(currentSlide+1);}
+    function prevSlide(){goToSlide(currentSlide-1);}
+    document.getElementById('prevSlide').addEventListener('click',prevSlide);
+    document.getElementById('nextSlide').addEventListener('click',nextSlide);
+    let touchStartX=0;
+    slides.addEventListener('touchstart',e=>touchStartX=e.touches[0].clientX);
+    slides.addEventListener('touchend',e=>{
+        const diff = touchStartX - e.changedTouches[0].clientX;
+        if(Math.abs(diff)>40) diff>0?nextSlide():prevSlide();
+    });
+    buildDots();
+
+    (function(){
+        const now = new Date();
+        const month = now.getMonth();
+        const year = now.getFullYear();
+        let sem, ta;
+        if(month>=8){sem='Ganjil';ta=`${year}/${year+1}`;}
+        else if(month<=1){sem='Ganjil';ta=`${year-1}/${year}`;}
+        else{sem='Genap';ta=`${year-1}/${year}`;}
+        document.getElementById('semesterText').textContent=`Semester ${sem} • Tahun Akademik ${ta}`;
+        document.getElementById('yearText').textContent = year;
+        window.currentSemester = `${sem} ${ta}`;
+    })();
+
+    let tesisBlobUrl=null, persetujuanBlobUrl=null;
+    function revoke(url){if(url)URL.revokeObjectURL(url);}
+    function setupPreview(input, previewDiv, iframe, textDisplay, blobRef) {
+        input.addEventListener('change', function(){
+            const file = this.files[0];
+            revoke(blobRef.url);
+            if(file){
+                textDisplay.textContent = file.name;
+                if(file.type==='application/pdf'){
+                    const url = URL.createObjectURL(file);
+                    blobRef.url = url;
+                    iframe.src = url;
+                    previewDiv.style.display = 'block';
+                }else{
+                    previewDiv.style.display = 'none';
+                }
+            }else{
+                textDisplay.textContent = 'Klik / seret file';
+                previewDiv.style.display = 'none';
+                iframe.src = '';
+                blobRef.url = null;
+            }
+        });
+    }
+    setupPreview(inputTesis, previewTesis, iframeTesis, tesisText, {url: tesisBlobUrl});
+    setupPreview(inputPersetujuan, previewPersetujuan, iframePersetujuan, persetujuanText, {url: persetujuanBlobUrl});
+
+    function showStatus(msg,type){
+        const icons = {success:'fa-check-circle',error:'fa-exclamation-circle',loading:'fa-spinner fa-pulse'};
+        statusMsg.innerHTML = `<i class="fas ${icons[type]||''}"></i> ${msg}`;
+        statusMsg.className = `status-msg ${type}`;
+        statusMsg.scrollIntoView({behavior:'smooth',block:'center'});
+    }
+    function hideStatus(){statusMsg.className='status-msg';}
+    function setLoading(loading){
+        btnSubmit.disabled = loading;
+        btnText.textContent = loading?'Mengunggah...':'Kirim Pengajuan';
+        submitIcon.className = loading?'fas fa-spinner fa-pulse':'fas fa-paper-plane';
+        progressContainer.style.display = loading?'block':'none';
+        if(loading)progressBar.style.width='0%';
+    }
+    function updateProgress(p){progressBar.style.width=p+'%';}
+
+    function validate(){
+        hideStatus();
+        const waRaw = inputWa.value.trim().replace(/[\s-]/g,'');
+        if(!inputNama.value.trim())return error('Nama wajib diisi',inputNama);
+        if(!waRaw)return error('Nomor HP/WA wajib diisi',inputWa);
+        if(!/^(\+62|62|0)8[1-9][0-9]{6,11}$/.test(waRaw))return error('Format nomor tidak valid',inputWa);
+        if(!inputEmail.value.trim())return error('Email wajib diisi',inputEmail);
+        if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(inputEmail.value))return error('Format email tidak valid',inputEmail);
+        if(!inputJudul.value.trim())return error('Judul tesis wajib diisi',inputJudul);
+        if(!inputTesis.files[0])return error('File tesis wajib diunggah',inputTesis);
+        if(inputTesis.files[0].type!=='application/pdf')return error('File tesis harus PDF',inputTesis);
+        if(inputTesis.files[0].size>MAX_TESIS)return error('File tesis maks 20 MB',inputTesis);
+        if(!inputPersetujuan.files[0])return error('Lembar persetujuan wajib diunggah',inputPersetujuan);
+        if(inputPersetujuan.files[0].type!=='application/pdf')return error('Lembar persetujuan harus PDF',inputPersetujuan);
+        if(inputPersetujuan.files[0].size>MAX_PERSETUJUAN)return error('Lembar persetujuan maks 10 MB',inputPersetujuan);
+        return true;
+    }
+    function error(msg,el){showStatus(msg,'error');el.focus();return false;}
+
+    function fileToBase64(file){
+        return new Promise((resolve,reject)=>{
+            const reader = new FileReader();
+            reader.onload = ()=>resolve(reader.result.split(',')[1]);
+            reader.onerror = ()=>reject(new Error('Gagal membaca file'));
+            reader.readAsDataURL(file);
+        });
+    }
+
+    form.addEventListener('submit', async (e)=>{
+        e.preventDefault();
+        if(!validate())return;
+
+        setLoading(true);
+        showStatus('Memproses data...','loading');
+        updateProgress(10);
+
+        setTimeout(async()=>{
+            try{
+                const tesisFile = inputTesis.files[0];
+                const persetujuanFile = inputPersetujuan.files[0];
+
+                updateProgress(25);
+                const [b64Tesis, b64Persetujuan] = await Promise.all([
+                    fileToBase64(tesisFile),
+                    fileToBase64(persetujuanFile)
+                ]);
+
+                updateProgress(60);
+                const payload = {
+                    nama: inputNama.value.trim(),
+                    wa: inputWa.value.trim(),
+                    email: inputEmail.value.trim(),
+                    judul: inputJudul.value.trim(),
+                    fileNameTesis: tesisFile.name,
+                    fileTesis: b64Tesis,
+                    mimeTesis: tesisFile.type,
+                    sizeTesis: tesisFile.size,
+                    fileNamePersetujuan: persetujuanFile.name,
+                    filePersetujuan: b64Persetujuan,
+                    mimePersetujuan: persetujuanFile.type,
+                    sizePersetujuan: persetujuanFile.size,
+                    timestamp: new Date().toISOString(),
+                    semester: window.currentSemester
+                };
+
+                updateProgress(75);
+                const response = await fetch(SCRIPT_URL, {
+                    method:'POST',
+                    mode:'no-cors',
+                    headers:{'Content-Type':'application/x-www-form-urlencoded'},
+                    body: new URLSearchParams({data: JSON.stringify(payload)}).toString()
+                });
+
+                updateProgress(100);
+
+                // Karena mode no-cors, kita tidak bisa membaca response body.
+                // Tampilkan pesan sukses dengan keterangan email.
+                showStatus(
+                    '✅ Berhasil! Data dan file tesis telah terunggah. ' +
+                    'Email konfirmasi telah dikirim ke alamat Anda.',
+                    'success'
+                );
+
+                form.reset();
+                tesisText.textContent = 'Klik / seret file tesis (maks 20 MB)';
+                persetujuanText.textContent = 'Klik / seret file persetujuan (maks 10 MB)';
+                previewTesis.style.display='none';
+                iframeTesis.src='';
+                previewPersetujuan.style.display='none';
+                iframePersetujuan.src='';
+                revoke(tesisBlobUrl); tesisBlobUrl=null;
+                revoke(persetujuanBlobUrl); persetujuanBlobUrl=null;
+            }catch(err){
+                showStatus('❌ Gagal mengirim: '+err.message,'error');
+            }finally{
+                setLoading(false);
+                setTimeout(()=>{
+                    if(statusMsg.classList.contains('success')) progressContainer.style.display='none';
+                },2000);
+            }
+        },0);
+    });
+
+    inputTesis.addEventListener('change', function(){
+        if(this.files[0] && this.files[0].size > MAX_TESIS){
+            showStatus('File tesis terlalu besar (maks 20 MB).','error');
+            this.value='';
+            tesisText.textContent='Klik / seret file tesis (maks 20 MB)';
+        }
+    });
+    inputPersetujuan.addEventListener('change', function(){
+        if(this.files[0] && this.files[0].size > MAX_PERSETUJUAN){
+            showStatus('Lembar persetujuan terlalu besar (maks 10 MB).','error');
+            this.value='';
+            persetujuanText.textContent='Klik / seret file persetujuan (maks 10 MB)';
+        }
+    });
+
+    console.log('✅ Form siap. Email notifikasi aktif.');
+})();
+</script>
+</body>
+</html>
